@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kate Anderson — Portfolio</title>
+<style>
+
+  :root{
+    --bg: #f5f5f5;
+    --text: #1f1f1f;
+    --muted: #6b6b6b;
+    --placeholder: #333333;
+    --font: Georgia, 'Times New Roman', serif;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin: 0;
+    background: var(--bg);
+  }
+
+  body{
+    font-family: var(--font);
+    font-weight: 400;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a{ color: inherit; text-decoration: none; }
+
+  ul{ list-style: none; margin: 0; padding: 0; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition: none !important; }
+  }
+
+  .frame-outer{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .page{
+    max-width: 1320px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 44px 28px 90px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ============ HERO HEADER: full-bleed image w/ overlaid header content ============ */
+
+  .hero-header{
+    display: grid;
+    width: 100%;
+  }
+
+  .hero-header > *{
+    grid-area: 1 / 1;
+  }
+
+  .hero-image{
+    width: 100%;
+    aspect-ratio: 1620 / 918;
+    background: #ffffff;
+  }
+
+  .hero-content{
+    z-index: 1;
+    width: 100%;
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 44px 28px;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ============ TOP ROW: name + nav ============ */
+
+  .top-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .name-col{
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .name{
+    font-family: var(--font);
+    font-weight: 400;
+    font-size: clamp(38px, 5.4vw, 64px);
+    letter-spacing: 0.01em;
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .name span{
+    display: block;
+  }
+
+  nav.top-nav{
+    display: flex;
+    gap: 30px;
+    padding-top: 14px;
+  }
+
+  nav.top-nav > ul{
+    display: flex;
+    gap: 30px;
+  }
+
+  nav.top-nav li{ position: relative; }
+
+  nav.top-nav a{
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    position: relative;
+    padding-bottom: 3px;
+  }
+
+  nav.top-nav > ul > li > a::after{
+    content: '';
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 0%;
+    height: 1px;
+    background: currentColor;
+    transition: width 0.3s ease;
+  }
+  nav.top-nav > ul > li > a:hover::after{ width: 100%; }
+
+  .has-dropdown .dropdown{
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 16px;
+    min-width: 200px;
+    background: #ececec;
+    padding: 10px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+    z-index: 50;
+  }
+
+  .has-dropdown:hover .dropdown,
+  .has-dropdown:focus-within .dropdown{
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .dropdown a{
+    display: block;
+    padding: 9px 20px;
+    font-size: 13px;
+    font-weight: 300;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+    color: var(--text);
+  }
+  .dropdown a:hover{ font-weight: 500; }
+
+  /* ============ INFO BLOCK: sits under name, left-aligned ============ */
+
+  .info-block{
+    text-align: left;
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.8;
+  }
+
+  .info-block a{
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.25s ease;
+  }
+  .info-block a:hover{ border-color: currentColor; }
+
+  /* ============ SECTIONS ============ */
+
+  .section{
+    margin-top: 90px;
+  }
+
+  #services.section{
+    margin-top: 60px;
+  }
+
+  .section-title{
+    font-size: clamp(20px, 2.6vw, 27px);
+    font-weight: 300;
+    letter-spacing: 0.03em;
+    margin: 0 0 40px;
+  }
+
+  /* ============ CAROUSEL ============ */
+
+  .carousel-track{
+    display: flex;
+    gap: 22px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x proximity;
+    padding: 2px 2px 10px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .carousel-track::-webkit-scrollbar{ display: none; }
+
+  .placeholder{
+    flex: 0 0 auto;
+    width: 340px;
+    aspect-ratio: 3 / 4;
+    background: var(--placeholder);
+    scroll-snap-align: start;
+    overflow: hidden;
+  }
+
+  /* Placeholders accept either an <img> or <video> as fill media */
+  .placeholder img,
+  .placeholder video,
+  .hero-image img,
+  .hero-image video{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .carousel-arrows{
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .chevron{
+    background: none;
+    border: none;
+    padding: 8px;
+    margin: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+    opacity: 0.4;
+    transition: opacity 0.25s ease;
+    flex: 0 0 auto;
+  }
+  .chevron:hover{ opacity: 1; }
+  .chevron svg{
+    width: 22px;
+    height: 22px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.5;
+  }
+
+  /* ============ CLIENTS ============ */
+
+  .clients-grid{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+  }
+
+  .client-col h3{
+    font-size: 15px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 26px;
+  }
+
+  .client-col ul{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .client-col li{
+    font-size: 15px;
+    font-weight: 300;
+    color: #333;
+  }
+
+  .client-col--continued{
+    padding-top: 41px;
+  }
+
+  /* ============ RESPONSIVE ============ */
+
+  @media (max-width: 900px){
+    .page{ padding: 34px 16px 60px; }
+    .section{ margin-top: 60px; }
+    #services.section{ margin-top: 40px; }
+    nav.top-nav > ul{ gap: 20px; }
+    .clients-grid{ grid-template-columns: repeat(2, 1fr); gap: 32px 40px; }
+    .client-col--continued{ padding-top: 0; }
+    .site-footer-inner{ padding: 0 16px; }
+  }
+
+  @media (max-width: 640px){
+    .top-row{ flex-direction: column; }
+    .clients-grid{ grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 560px){
+    .placeholder{ width: 220px; }
+  }
+
+  /* ============ CLIENTS HEADER (larger) ============ */
+
+  #clients .section-title{
+    font-size: clamp(28px, 3.6vw, 40px);
+  }
+
+  /* ============ SPLIT SECTION (media + text) ============ */
+
+  .split-section{
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .split-media{
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 9 / 16;
+    background: var(--placeholder);
+    overflow: hidden;
+    justify-self: start;
+    margin: 0;
+  }
+
+  .split-text{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    gap: 20px;
+  }
+
+  .split-text h2{
+    font-family: var(--font);
+    font-weight: 300;
+    font-size: clamp(24px, 3vw, 32px);
+    letter-spacing: 0.02em;
+    margin: 0;
+  }
+
+  .split-text p{
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: #333;
+    margin: 0;
+    max-width: 520px;
+    text-wrap: balance;
+  }
+
+  .split-text .cta-link{
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  /* ============ PROPOSAL MODAL ============ */
+
+  .modal-overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(31, 31, 31, 0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 200;
+  }
+
+  .modal-overlay.is-open{
+    display: flex;
+  }
+
+  .modal-box{
+    position: relative;
+    background: #ececec;
+    border: 1px solid #4d4d4d;
+    width: 100%;
+    max-width: 440px;
+    padding: 40px 36px 36px;
+  }
+
+  .modal-close{
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-family: var(--font);
+    font-size: 22px;
+    line-height: 1;
+    color: var(--text);
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .modal-title{
+    font-family: var(--font);
+    font-weight: 400;
+    font-size: 22px;
+    letter-spacing: 0.01em;
+    margin: 0 0 26px;
+  }
+
+  #proposal-form{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .field-box{
+    background: #ffffff;
+    border: 1px solid #999999;
+    padding: 8px 14px 10px;
+  }
+
+  .field-box label{
+    display: block;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #777;
+    margin-bottom: 4px;
+  }
+
+  .field-box input,
+  .field-box textarea{
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: var(--font);
+    font-size: 14px;
+    color: var(--text);
+    padding: 0;
+    resize: none;
+  }
+
+  .field-box--multiline textarea{
+    resize: vertical;
+    min-height: 70px;
+  }
+
+  .modal-submit{
+    align-self: flex-start;
+    margin-top: 6px;
+    background: var(--text);
+    color: #f5f5f5;
+    border: none;
+    font-family: var(--font);
+    font-size: 14px;
+    letter-spacing: 0.03em;
+    padding: 11px 26px;
+    cursor: pointer;
+    transition: opacity 0.25s ease;
+  }
+  .modal-submit:hover{ opacity: 0.85; }
+
+  .modal-success{
+    display: none;
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 300;
+    letter-spacing: 0.01em;
+    color: var(--text);
+    padding: 10px 0 4px;
+  }
+
+  .modal-success.is-visible{
+    display: block;
+  }
+
+  @media (max-width: 900px){
+    .split-section{
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .split-media{ max-width: 320px; }
+  }
+
+  /* ============ FOOTER ============ */
+
+  .site-footer{
+    background: var(--bg);
+    border-top: 1px solid #d8d8d8;
+    padding: 34px 0 40px;
+  }
+
+  .site-footer-inner{
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0 28px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--text);
+  }
+
+  .site-footer-name{
+    font-family: var(--font);
+    font-size: 16px;
+    color: var(--text);
+  }
+
+  .site-footer a{
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.25s ease;
+  }
+  .site-footer a:hover{ border-color: currentColor; }
+
+</style>
+</head>
+<body>
+
+<div class="frame-outer">
+
+  <header class="hero-header">
+    <div class="hero-image" aria-label="Hero image placeholder, 1620 by 918"><img src="images/hero.jpg" alt="Kate Anderson" onerror="this.outerHTML='&lt;video autoplay muted loop playsinline src=&quot;images/hero.mp4&quot;&gt;&lt;/video&gt;'"></div>
+    <div class="hero-content">
+      <div class="top-row">
+        <div class="name-col">
+          <h1 class="name"><span>Kate</span><span>Anderson</span></h1>
+          <div class="info-block" id="contact">
+            <div>Luxury Client, Content &amp; Commerce Strategy</div>
+            <div>New York, New York</div>
+            <div><a href="mailto:kate@katebanderson.com">kate@katebanderson.com</a></div>
+          </div>
+        </div>
+        <nav class="top-nav">
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#portfolio">Portfolio</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <div class="page">
+    <section class="section" id="services">
+      <div id="content-production"></div>
+      <h2 class="section-title">Content Production &amp; Project Management</h2>
+      <div class="carousel-track" id="carousel-3"></div>
+      <div class="carousel-arrows">
+        <button class="chevron" data-target="carousel-3" data-dir="-1" aria-label="Previous"><svg viewBox="0 0 24 24"><path d="M15 5 L8 12 L15 19"/></svg></button>
+        <button class="chevron" data-target="carousel-3" data-dir="1" aria-label="Next"><svg viewBox="0 0 24 24"><path d="M9 5 L16 12 L9 19"/></svg></button>
+      </div>
+    </section>
+
+    <!-- SECTION 4 -->
+    <section class="section" id="editorial-media">
+      <h2 class="section-title">Editorial</h2>
+      <div class="carousel-track" id="carousel-4"></div>
+      <div class="carousel-arrows">
+        <button class="chevron" data-target="carousel-4" data-dir="-1" aria-label="Previous"><svg viewBox="0 0 24 24"><path d="M15 5 L8 12 L15 19"/></svg></button>
+        <button class="chevron" data-target="carousel-4" data-dir="1" aria-label="Next"><svg viewBox="0 0 24 24"><path d="M9 5 L16 12 L9 19"/></svg></button>
+      </div>
+    </section>
+
+    <!-- SECTION 5 -->
+    <section class="section" id="styling">
+      <h2 class="section-title">Celebrity &amp; Personal Styling</h2>
+      <div class="carousel-track" id="carousel-5"></div>
+      <div class="carousel-arrows">
+        <button class="chevron" data-target="carousel-5" data-dir="-1" aria-label="Previous"><svg viewBox="0 0 24 24"><path d="M15 5 L8 12 L15 19"/></svg></button>
+        <button class="chevron" data-target="carousel-5" data-dir="1" aria-label="Next"><svg viewBox="0 0 24 24"><path d="M9 5 L16 12 L9 19"/></svg></button>
+      </div>
+    </section>
+
+    <!-- SECTION 6 : CLIENTS -->
+    <section class="section" id="clients">
+      <h2 class="section-title">Clients</h2>
+      <div class="clients-grid">
+
+        <div class="client-col">
+          <h3>Red Carpet</h3>
+          <ul id="list-redcarpet"></ul>
+        </div>
+
+        <div class="client-col">
+          <h3>Editorial</h3>
+          <ul id="list-editorial"></ul>
+        </div>
+
+        <div class="client-col">
+          <h3>Advertising</h3>
+          <ul id="list-advertising-1"></ul>
+        </div>
+
+        <div class="client-col client-col--continued">
+          <ul id="list-advertising-2"></ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 7 : LOFI SERVICES -->
+    <section class="section split-section" id="lofi-services">
+      <div class="split-media" aria-label="Photo or video placeholder, 9 by 16"><img src="images/services.jpg" alt="LoFi Content Production Services" onerror="this.outerHTML='&lt;video autoplay muted loop playsinline src=&quot;images/services.mp4&quot;&gt;&lt;/video&gt;'"></div>
+      <div class="split-text">
+        <h2>LoFi Content Production Services</h2>
+        <p>Bring your brand to life with high-performing, low-lift photo and video content. Services include content capture, editing, and delivery, with optional Ready-to-Post add-ons for seamless publishing across your channels.</p>
+        <button type="button" class="cta-link" id="proposal-trigger">REQUEST PROPOSAL</button>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="modal-overlay" id="proposal-overlay">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="proposal-title">
+      <button type="button" class="modal-close" id="proposal-close" aria-label="Close">&times;</button>
+      <h3 class="modal-title" id="proposal-title">REQUEST PROPOSAL</h3>
+      <form id="proposal-form">
+        <div class="field-box">
+          <label for="field-name">Name</label>
+          <input type="text" id="field-name" name="name" required>
+        </div>
+        <div class="field-box">
+          <label for="field-company">Company</label>
+          <input type="text" id="field-company" name="company">
+        </div>
+        <div class="field-box">
+          <label for="field-email">Email</label>
+          <input type="email" id="field-email" name="email" required>
+        </div>
+        <div class="field-box field-box--multiline">
+          <label for="field-project">Project</label>
+          <textarea id="field-project" name="project" rows="4"></textarea>
+        </div>
+        <button type="submit" class="modal-submit">Submit</button>
+      </form>
+      <div class="modal-success" id="proposal-success">Be in touch soon!</div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <div class="site-footer-name">Kate Anderson</div>
+      <div><a href="mailto:kate@katebanderson.com">kate@katebanderson.com</a></div>
+      <div><a href="https://instagram.com/keptbykate" target="_blank" rel="noopener">@keptbykate</a></div>
+    </div>
+  </footer>
+</div>
+
+<script>
+  // Populate carousels: 10 portrait images each, named per section
+  const carouselPrefixes = {
+    'carousel-3': 'content-carousel',
+    'carousel-4': 'editorial-carousel',
+    'carousel-5': 'styling-carousel'
+  };
+  Object.keys(carouselPrefixes).forEach(function(id){
+    const track = document.getElementById(id);
+    const prefix = carouselPrefixes[id];
+    for(let i = 1; i <= 10; i++){
+      const div = document.createElement('div');
+      div.className = 'placeholder';
+      const basePath = 'images/' + prefix + '-' + i;
+      const img = document.createElement('img');
+      img.alt = '';
+      img.onerror = function(){
+        const video = document.createElement('video');
+        video.autoplay = true;
+        video.muted = true;
+        video.loop = true;
+        video.playsInline = true;
+        video.src = basePath + '.mp4';
+        img.replaceWith(video);
+      };
+      img.src = basePath + '.jpg';
+      div.appendChild(img);
+      track.appendChild(div);
+    }
+  });
+
+  // Chevron controls (native trackpad/touch scroll still works via overflow-x)
+  document.querySelectorAll('.chevron').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      const target = document.getElementById(btn.getAttribute('data-target'));
+      const dir = parseInt(btn.getAttribute('data-dir'), 10);
+      const scrollAmount = target.querySelector('.placeholder').offsetWidth + 22;
+      target.scrollBy({ left: dir * scrollAmount * 2, behavior: 'smooth' });
+    });
+  });
+
+  // Client lists
+  const redCarpet = ["Amal Clooney","Amanda Hearst","Anya Taylor-Joy","Blake Lively","Common","Constance Wu","Diane Kruger","Gal Gadot","Hayley Atwell","Karen Pittman","Liza Koshy","Lucy Hale","Lupita Nyong'o","Maddie Ziegler","Meryl Streep","Michelle Dockery","Natalia Reyes","Olivia Holt","Shailene Woodley","Taissa Farmiga","Tatiana Maslany","Vanessa Kirby","Whitney Wolfe Herd"];
+  const editorial = ["Bal Harbour Shops","Editorialist","Elle","InStyle","JCK","La Patiala","L'Officiel Thailand","National Jeweler","New York Times","Only Natural Diamonds","People","Porter","The Hollywood Reporter","The Zoe Report","Time","Vanity Fair","Veranda","Vogue","WWD"];
+  const advertising1 = ["Aldo","Another Tomorrow","Badgley Mischka","Bulgari","Cartier","Chloé","Cotton","David Yurman","De Beers","Dior","Gucci","Harvey Nichols","Jemma Wynne","Jimmy Choo","Lancôme","L'Oréal","Matches","Messika","Microsoft","MTV","Mytheresa","Nanushka","Net-a-Porter"];
+  const advertising2 = ["Neiman Marcus","Piaget","Prada","Renna","Rimowa","Roberto Coin","Saks Fifth Avenue","St. Regis","Tory Burch","Ulla Johnson","Viktor & Rolf"];
+
+  function fillList(id, arr){
+    const ul = document.getElementById(id);
+    arr.forEach(function(name){
+      const li = document.createElement('li');
+      li.textContent = name;
+      ul.appendChild(li);
+    });
+  }
+  fillList('list-redcarpet', redCarpet);
+  fillList('list-editorial', editorial);
+  fillList('list-advertising-1', advertising1);
+  fillList('list-advertising-2', advertising2);
+
+  // Proposal modal
+  const proposalOverlay = document.getElementById('proposal-overlay');
+  const proposalTrigger = document.getElementById('proposal-trigger');
+  const proposalClose = document.getElementById('proposal-close');
+  const proposalForm = document.getElementById('proposal-form');
+  const proposalSuccess = document.getElementById('proposal-success');
+
+  function openProposal(){
+    resetProposalView();
+    proposalOverlay.classList.add('is-open');
+  }
+  function closeProposal(){
+    proposalOverlay.classList.remove('is-open');
+  }
+  function resetProposalView(){
+    proposalForm.reset();
+    proposalForm.style.display = '';
+    proposalSuccess.classList.remove('is-visible');
+  }
+
+  proposalTrigger.addEventListener('click', openProposal);
+  proposalClose.addEventListener('click', closeProposal);
+  proposalOverlay.addEventListener('click', function(e){
+    if(e.target === proposalOverlay) closeProposal();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeProposal();
+  });
+
+  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mzdlldkk';
+  const submitBtn = proposalForm.querySelector('.modal-submit');
+  const submitBtnDefaultText = submitBtn.textContent;
+
+  proposalForm.addEventListener('submit', function(e){
+    e.preventDefault();
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+
+    fetch(FORMSPREE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json' },
+      body: new FormData(proposalForm)
+    })
+      .then(function(response){
+        if(response.ok){
+          proposalForm.reset();
+          proposalForm.style.display = 'none';
+          proposalSuccess.classList.add('is-visible');
+          submitBtn.textContent = submitBtnDefaultText;
+          submitBtn.disabled = false;
+        } else {
+          throw new Error('Submission failed');
+        }
+      })
+      .catch(function(){
+        submitBtn.textContent = submitBtnDefaultText;
+        submitBtn.disabled = false;
+        alert('Something went wrong sending your request. Please try again, or email kate@katebanderson.com directly.');
+      });
+  });
+</script>
+
+</body>
+</html>
